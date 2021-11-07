@@ -8,10 +8,13 @@ services:
     command: sleep infinity
     volumes:
       - ./:/workspace
+      - ../uppsala:/workspace/uppsala
+      - ../hfmts-data:/workspace/hfmts-data
+
     working_dir: /workspace
-    ports:
-      - "8000:8000"
-      - "8443:8443"
+    # ports:
+      # - "8000:8000"
+      # - "8443:8443"
 
   redis-cache:
     container_name: redis-cache
