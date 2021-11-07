@@ -19,6 +19,7 @@ export POSTGRES_PASSWORD=frappe
 export SITE_NAME=mysite.localhost
 export SITES=mysite.localhost
 export POSTGRES_USER=postgres
+export MARIADB_PASSWORD=IeGoup2I
 export ADMIN_PASSWORD=frappe
 export INSTALL_APPS=uppsala
 export SOCKETIO_PORT=8443
@@ -76,7 +77,7 @@ function install-docker-dev() {
     [ ! -d 'frappe-bench' ] && docker exec -w /workspace $CONTAINER bench init --skip-redis-config-generation --frappe-branch version-13 frappe-bench
     
     echo "Configure frappe bench."
-    docker exec -w /workspace/frappe-bench $CONTAINER bench set-mariadb-host postgresql
+    docker exec -w /workspace/frappe-bench $CONTAINER bench set-mariadb-host mariadb
     docker exec -w /workspace/frappe-bench $CONTAINER bench set-config -g redis_cache redis://redis-cache:6379
     docker exec -w /workspace/frappe-bench $CONTAINER bench set-config -g redis_queue redis://redis-queue:6379
     docker exec -w /workspace/frappe-bench $CONTAINER bench set-config -g redis_socketio redis://redis-socketio:6379
@@ -84,8 +85,7 @@ function install-docker-dev() {
 
     # Install site
     echo "Use $POSTGRES_USER and $POSTGRES_PASSWORD for username and password on prompts:"
-    [ ! -d "frappe-bench/sites/$SITE_NAME" ] && docker exec -w /workspace/frappe-bench -it $CONTAINER bench new-site $SITE_NAME --db-type postgres --db-host postgresql --db-password $POSTGRES_PASSWORD --admin-password $ADMIN_PASSWORD
-
+    [ ! -d "frappe-bench/sites/$SITE_NAME" ] && docker exec -w /workspace/frappe-bench -it $CONTAINER bench new-site $SITE_NAME --mariadb-root-password $MARIADB_PASSWORD --admin-password $ADMIN_PASSWORD --no-mariadb-socket
     # Enable developer mode
     echo "Apply default settings."
     docker exec -w /workspace/frappe-bench $CONTAINER bench --site $SITE_NAME set-config developer_mode 1
@@ -190,7 +190,7 @@ function start() {
         docker-compose up -d redis-cache
         docker-compose up -d redis-queue
         docker-compose up -d redis-socketio
-        docker-compose up -d postgresql
+        docker-compose up -d task
     fi
 
     if [[ "$1" =~ "site" ]]; then
@@ -210,7 +210,7 @@ function start() {
     if [[ "$1" =~ "dev" ]]; then
         docker-compose -f docker-compose-dev.yml up -d
         echo "Run 'task start bench' manually and open http://$SITE_NAME:8000/ in your browser."
-        docker exec -w /workspace/frappe-bench frappe-bench bench start
+        docker exec -e "TERM=xterm-256color" -w /workspace/frappe-bench frappe-bench bench start
     fi
 
     if [[ "$1" =~ "bench" ]]; then

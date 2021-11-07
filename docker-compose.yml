@@ -1,5 +1,14 @@
 version: '3'
 # https://github.com/frappe/frappe_docker/blob/develop/installation/frappe-postgresql/docker-compose.yml
+volumes:
+  logs-vol:
+  sites-vol:
+  assets-vol:
+  postgresql-vol:
+  redis-cache-vol:
+  redis-queue-vol:
+  redis-socketio-vol:
+
 services:
 
   frappe-nginx:
@@ -18,7 +27,7 @@ services:
       - "127.0.0.1:8080:80"
       - "127.0.0.1:8443:443"
     volumes:
-      - sites-vol/:/var/www/html/sites:rw
+      - sites-vol:/var/www/html/sites:rw
       - assets-vol:/assets:rw
 
   frappe-python:
@@ -156,11 +165,4 @@ services:
     volumes:
       - sites-vol:/home/frappe/frappe-bench/sites:rw
 
-volumes:
-  logs-vol:
-  sites-vol:
-  assets-vol:
-  postgresql-vol:
-  redis-cache-vol:
-  redis-queue-vol:
-  redis-socketio-vol:
+
