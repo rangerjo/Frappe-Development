@@ -1,0 +1,12 @@
+[Unit]
+Description=Frappe Bench Webserver
+After=syslog.target
+
+[Service]
+SyslogIdentifier=frappebench
+Restart=always
+StandardOutput=syslog
+ExecStart=docker exec -w /workspace/frappe-bench frappe-bench bench start
+
+[Install]
+WantedBy=multi-user.target

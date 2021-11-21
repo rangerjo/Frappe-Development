@@ -16,8 +16,8 @@ export FRAPPE_VERSION=v13
 export LETSENCRYPT_EMAIL=email@example.com
 export POSTGRES_HOST=postgresql
 export POSTGRES_PASSWORD=frappe
-export SITE_NAME=mysite.localhost
-export SITES=mysite.localhost
+export SITE_NAME=frappe.hfmts.ch
+export SITES=frappe.hfmts.ch
 export POSTGRES_USER=postgres
 export MARIADB_PASSWORD=IeGoup2I
 export ADMIN_PASSWORD=frappe
@@ -74,7 +74,8 @@ function install-docker-dev() {
     CONTAINER=frappe-bench
 
     echo "Run docker installation."
-    [ ! -d 'frappe-bench' ] && docker exec -w /workspace $CONTAINER bench init --skip-redis-config-generation --frappe-branch version-13 frappe-bench
+    # [ ! -d 'frappe-bench' ] && docker exec -w /workspace $CONTAINER bench init --skip-redis-config-generation --frappe-branch version-13 frappe-bench
+    docker exec -w /workspace $CONTAINER bench init --skip-redis-config-generation --frappe-branch version-13 frappe-bench
     
     echo "Configure frappe bench."
     docker exec -w /workspace/frappe-bench $CONTAINER bench set-mariadb-host mariadb
@@ -84,7 +85,7 @@ function install-docker-dev() {
     docker exec -w /workspace/frappe-bench $CONTAINER bench set-config -g socketio_port $SOCKETIO_PORT
 
     # Install site
-    echo "Use $POSTGRES_USER and $POSTGRES_PASSWORD for username and password on prompts:"
+    echo "Use $MARIADB_USER and $ADMIN_PASSWORD for username and password on prompts:"
     [ ! -d "frappe-bench/sites/$SITE_NAME" ] && docker exec -w /workspace/frappe-bench -it $CONTAINER bench new-site $SITE_NAME --mariadb-root-password $MARIADB_PASSWORD --admin-password $ADMIN_PASSWORD --no-mariadb-socket
     # Enable developer mode
     echo "Apply default settings."
