@@ -91,7 +91,7 @@ function install-docker-dev() {
     echo "Apply default settings."
     docker exec -w /workspace/frappe-bench $CONTAINER bench --site $SITE_NAME set-config developer_mode 1
     docker exec -w /workspace/frappe-bench $CONTAINER bench --site $SITE_NAME set-config max_file_size 1000000
-    docker exec -w /workspace/frappe-bench $CONTAINER echo $SITE_NAME > /workspace/frappe-bench/sites/currentsite.txt
+    docker exec -w /workspace/frappe-bench $CONTAINER bench use $SITE_NAME
     docker restart $CONTAINER
 }
 

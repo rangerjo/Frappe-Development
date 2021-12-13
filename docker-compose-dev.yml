@@ -7,13 +7,12 @@ services:
     image: frappe/bench:latest
     command: sleep infinity
     volumes:
+      # - frappe-sites-vol:/workspace/frappe-bench/sites/
       - ./:/workspace
-      - ../uppsala:/workspace/uppsala
-      - ../hfmts-data:/workspace/hfmts-data
 
     working_dir: /workspace
-    # ports:
-      # - "8000:8000"
+    ports:
+      - "8000:8000"
       # - "8443:8443"
 
   redis-cache:
@@ -48,18 +47,6 @@ services:
       - "80:80"
       - "443:443"
 
-  # postgresql:
-  #   container_name: postgresql
-  #   image: postgres:11.8
-  #   restart: on-failure
-  #   ports:
-  #     - "127.0.0.1:5432:5432"
-  #   environment:
-  #     POSTGRES_USER: ${POSTGRES_USER}
-  #     POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-  #   volumes:
-  #     - postgresql-vol:/var/lib/postgresql/data
-
   mariadb:
     image: mariadb:10.3
     container_name: mariadb
@@ -76,3 +63,5 @@ volumes:
   redis-cache-vol:
   redis-queue-vol:
   redis-socketio-vol:
+  frappe-sites-vol:
+    name: frappe-sites-vol
