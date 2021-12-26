@@ -73,9 +73,8 @@ function install() {
 function install-docker-dev() {
     CONTAINER=frappe-bench
 
-    echo "Run docker installation."
-    # [ ! -d 'frappe-bench' ] && docker exec -w /workspace $CONTAINER bench init --skip-redis-config-generation --frappe-branch version-13 frappe-bench
-    docker exec -w /workspace $CONTAINER bench init --skip-redis-config-generation --frappe-branch version-13 frappe-bench
+    echo "Run bench init"
+    docker exec -w /workspace $CONTAINER bench init --ignore-exist --skip-redis-config-generation --frappe-branch version-13 frappe-bench
     
     echo "Configure frappe bench."
     docker exec -w /workspace/frappe-bench $CONTAINER bench set-mariadb-host mariadb
